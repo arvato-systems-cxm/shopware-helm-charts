@@ -257,91 +257,28 @@ spec:
           {{- toYaml . | nindent 8 }}
       {{- end }}
 
+    {{- $init := include "shopware.store.initContainersYaml" . -}}
+    {{- if $init }}
     initContainers:
-      {{- with .Values.store.container.initContainers }}
-          {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- if hasKey .Values.store "sidecarLogging" }}
-      - name: logging
-        image:  "{{ .Values.store.sidecarLogging.image.repository }}:{{ .Values.store.sidecarLogging.image.tag }}"
-        imagePullPolicy: {{ .Values.store.sidecarLogging.image.pullPolicy | default "IfNotPresent" }}
-        restartPolicy: Always
-        command:
-          - /fluent-bit/bin/fluent-bit
-        args:
-          - '--workdir=/fluent-bit/etc'
-          - '--config=/fluent-bit/etc/conf/fluent-bit.conf'
-        ports:
-          - name: http
-            containerPort: 2020
-            protocol: TCP
-          - name: metrics
-            containerPort: 2021
-            protocol: TCP
-        resources: {}
-        volumeMounts:
-          - name: {{ template "getFluentBitName" . }}
-            mountPath: /fluent-bit/etc/conf
-          - name: logs
-            mountPath: {{ .Values.store.sidecarLogging.logFolder | default "/var/log" }}
-            readOnly: true
-        livenessProbe:
-          httpGet:
-            path: /
-            port: http
-            scheme: HTTP
-          timeoutSeconds: 1
-          periodSeconds: 10
-          successThreshold: 1
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /api/v1/health
-            port: http
-            scheme: HTTP
-          timeoutSeconds: 1
-          periodSeconds: 10
-          successThreshold: 1
-          failureThreshold: 3
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-      {{- end }}
+    {{ $init | nindent 8 }}
+    {{- end }}
 
+    {{- $extraContainers := include "shopware.store.extraContainers" . }}
+    {{- if $extraContainers }}
     extraContainers:
-      {{- with .Values.store.container.extraContainers }}
-          {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- if hasKey .Values.store "fpm" }}
-      {{- if ne .Values.store.fpm.processManagement "dynamic" }}
-      - name: php-fpm-exporter
-        env:
-        - name: PHP_FPM_SCRAPE_URI
-          value: {{ .Values.store.fpm.scrapeURI | default "tcp://127.0.0.1:9000/status" }}
-        image: hipages/php-fpm_exporter
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 9253
-          protocol: TCP
-        resources:
-          limits:
-            cpu: 30m
-            memory: 32Mi
-          requests:
-            cpu: 10m
-            memory: 10Mi
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-      {{- end }}
-      {{- end }}
+    {{ $extraContainers | nindent 8 }}
+    {{- end }}
 
     resources:
       {{- with .Values.store.container.resources }}
           {{- toYaml . | nindent 6 }}
       {{- end }}
+    {{- with .Values.store.container.extraEnvs }}
+    {{- if gt (len .) 0 }}
     extraEnvs:
-      {{- with .Values.store.container.extraEnvs }}
-          {{- toYaml . | nindent 6 }}
-      {{- end }}
+    {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- end }}
     volumes:
       - configMap:
           defaultMode: 420

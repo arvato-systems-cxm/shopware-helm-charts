@@ -162,3 +162,105 @@ secretAccessKeyRef:
     tenant_id    tenant-{{ .Release.Namespace }}
 {{- end }}
 {{- end }}
+
+{{/*
+Renders initContainers YAML (without emitting `initContainers: null`).
+Keeps the container YAML in normal YAML form (no dict gymnastics).
+*/}}
+{{- define "shopware.store.initContainersYaml" -}}
+{{- $out := "" -}}
+
+{{- with .Values.store.container.initContainers }}
+{{- if gt (len .) 0 -}}
+{{- $out = printf "%s\n%s" $out (toYaml .) -}}
+{{- end -}}
+{{- end -}}
+
+{{- if hasKey .Values.store "sidecarLogging" -}}
+{{- $out = printf "%s\n%s" $out (include "shopware.store.loggingInitContainerYaml" .) -}}
+{{- end -}}
+
+{{- $out | trim -}}
+{{- end }}
+
+{{- define "shopware.store.loggingInitContainerYaml" -}}
+- name: logging
+  image: "{{ .Values.store.sidecarLogging.image.repository }}:{{ .Values.store.sidecarLogging.image.tag }}"
+  imagePullPolicy: {{ .Values.store.sidecarLogging.image.pullPolicy | default "IfNotPresent" }}
+  restartPolicy: Always
+  command:
+    - /fluent-bit/bin/fluent-bit
+  args:
+    - '--workdir=/fluent-bit/etc'
+    - '--config=/fluent-bit/etc/conf/fluent-bit.conf'
+  ports:
+    - name: http
+      containerPort: 2020
+      protocol: TCP
+    - name: metrics
+      containerPort: 2021
+      protocol: TCP
+  resources: {}
+  volumeMounts:
+    - name: {{ template "getFluentBitName" . }}
+      mountPath: /fluent-bit/etc/conf
+    - name: logs
+      mountPath: {{ .Values.store.sidecarLogging.logFolder | default "/var/log" }}
+      readOnly: true
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+      scheme: HTTP
+    timeoutSeconds: 1
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: /api/v1/health
+      port: http
+      scheme: HTTP
+    timeoutSeconds: 1
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+  terminationMessagePath: /dev/termination-log
+  terminationMessagePolicy: File
+{{- end }}
+
+{{/*
+Renders extraContainers YAML without emitting `extraContainers: null`.
+Keeps container definitions as normal YAML.
+*/}}
+{{- define "shopware.store.extraContainersYaml" -}}
+{{- $out := "" -}}
+
+{{- with .Values.store.container.extraContainers }}
+{{- if gt (len .) 0 }}
+{{- $out = printf "%s\n%s" $out (toYaml .) }}
+{{- end }}
+{{- end }}
+
+{{- if and (hasKey .Values.store "fpm") (ne .Values.store.fpm.processManagement "dynamic") }}
+{{- $out = printf "%s\n%s" $out (include "shopware.store.phpFpmExporterContainerYaml" .) }}
+{{- end }}
+
+{{- $out | trim }}
+{{- end }}
+
+{{/*
+php-fpm exporter sidecar container
+*/}}
+{{- define "shopware.store.phpFpmExporterContainerYaml" -}}
+- name: php-fpm-exporter
+  image: hipages/php-fpm_exporter
+  imagePullPolicy: IfNotPresent
+  env:
+    - name: PHP_FPM_SCRAPE_URI
+      value: {{ .Values.store.fpm.scrapeURI | default "tcp://127.0.0.1:9000/status" }}
+  ports:
+    - containerPort: 9253
+      protocol: TCP
+  resources: {}
+{{- end }}
