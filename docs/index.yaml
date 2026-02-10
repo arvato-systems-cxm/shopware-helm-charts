@@ -1,0 +1,68 @@
+apiVersion: v1
+entries:
+  shopware:
+  - apiVersion: v2
+    appVersion: 0.0.55
+    created: "2026-02-10T10:12:07.047746+02:00"
+    dependencies:
+    - condition: percona.enabled
+      name: pxc-operator
+      repository: https://percona.github.io/percona-helm-charts/
+      version: 1.14.0
+    - condition: rustfs.enabled
+      name: rustfs
+      repository: https://rustfs.github.io/helm
+      version: 0.0.73
+    - alias: valkeyapp
+      condition: valkeyapp.enabled
+      name: valkey
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 1.0.1
+    - alias: valkeysession
+      condition: valkeysession.enabled
+      name: valkey
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 1.0.1
+    - alias: valkeyworker
+      condition: valkeyworker.enabled
+      name: valkey
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 1.0.1
+    - alias: redisapp
+      condition: redisapp.enabled
+      name: redis
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 19.1.2
+    - alias: redissession
+      condition: redissession.enabled
+      name: redis
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 19.1.2
+    - alias: redisworker
+      condition: redisworker.enabled
+      name: redis
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 19.1.2
+    - alias: grafana
+      condition: grafana.enabled
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      version: 8.5.0
+    - alias: prometheus
+      condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 25.24.1
+    - alias: otel-collector
+      condition: otel-collector.enabled
+      name: opentelemetry-collector
+      repository: https://open-telemetry.github.io/opentelemetry-helm-charts
+      version: 0.108.0
+    description: A Helm chart for Kubernetes
+    digest: 2522d84308a2fcce154ec2eb88ad3eae2f93af7ee2856853595e0a6c080f04e9
+    name: shopware
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/arvato-systems-cxm/shopware-helm-charts/my-main/docs/shopware-0.0.55.tgz
+    version: 0.0.55
+generated: "2026-02-10T10:12:07.025705+02:00"
