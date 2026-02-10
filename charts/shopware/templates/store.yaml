@@ -263,7 +263,7 @@ spec:
     {{ $init | nindent 8 }}
     {{- end }}
 
-    {{- $extraContainers := include "shopware.store.extraContainers" . }}
+    {{- $extraContainers := include "shopware.store.extraContainersYaml" . }}
     {{- if $extraContainers }}
     extraContainers:
     {{ $extraContainers | nindent 8 }}
