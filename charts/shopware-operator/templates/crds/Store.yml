@@ -6117,6 +6117,8 @@ spec:
                     redisDatabase:
                       default: 0
                       type: integer
+                    redisDsn:
+                      type: string
                     redisHost:
                       type: string
                     redisPort:
@@ -12248,7 +12250,13 @@ spec:
                 disableDatabaseCheck:
                   default: false
                   type: boolean
+                disableFastlyCheck:
+                  default: false
+                  type: boolean
                 disableJobDeletion:
+                  type: boolean
+                disableOpensearchCheck:
+                  default: false
                   type: boolean
                 disableS3Check:
                   default: false
@@ -19158,6 +19166,8 @@ spec:
                     redisDatabase:
                       default: 0
                       type: integer
+                    redisDsn:
+                      type: string
                     redisHost:
                       type: string
                     redisPort:
@@ -31311,6 +31321,8 @@ spec:
                     redisDatabase:
                       default: 0
                       type: integer
+                    redisDsn:
+                      type: string
                     redisHost:
                       type: string
                     redisPort:

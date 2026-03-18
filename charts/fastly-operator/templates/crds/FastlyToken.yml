@@ -24,6 +24,9 @@ spec:
         - jsonPath: .status.lastUsedAt
           name: Last Used
           type: date
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
       name: v1
       schema:
         openAPIV3Schema:
@@ -92,6 +95,10 @@ spec:
               type: object
             status:
               properties:
+                activeServiceIDs:
+                  items:
+                    type: string
+                  type: array
                 firstTokenCharacters:
                   type: string
                 lastUsedAt:

@@ -15,75 +15,75 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.0.55
+version: 0.0.56
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "0.0.55"
+appVersion: "0.0.56"
 
 dependencies:
-  - name: pxc-operator
-    condition: percona.enabled
-    version: 1.14.0
-    repository: https://percona.github.io/percona-helm-charts/
+- name: pxc-operator
+  condition: percona.enabled
+  version: 1.14.0
+  repository: https://percona.github.io/percona-helm-charts/
 
-  - name: rustfs
-    condition: rustfs.enabled
-    version: 0.0.73
-    repository: https://rustfs.github.io/helm
+- name: rustfs
+  condition: rustfs.enabled
+  version: 0.0.73
+  repository: https://rustfs.github.io/helm
 
-  - name: valkey
-    alias: valkeyapp
-    version: 1.0.1
-    repository: oci://registry-1.docker.io/bitnamicharts
-    condition: valkeyapp.enabled
+- name: valkey
+  alias: valkeyapp
+  version: 1.0.1
+  repository: oci://registry-1.docker.io/bitnamicharts
+  condition: valkeyapp.enabled
 
-  - name: valkey
-    alias: valkeysession
-    version: 1.0.1
-    repository: oci://registry-1.docker.io/bitnamicharts
-    condition: valkeysession.enabled
+- name: valkey
+  alias: valkeysession
+  version: 1.0.1
+  repository: oci://registry-1.docker.io/bitnamicharts
+  condition: valkeysession.enabled
 
-  - name: valkey
-    alias: valkeyworker
-    version: 1.0.1
-    repository: oci://registry-1.docker.io/bitnamicharts
-    condition: valkeyworker.enabled
+- name: valkey
+  alias: valkeyworker
+  version: 1.0.1
+  repository: oci://registry-1.docker.io/bitnamicharts
+  condition: valkeyworker.enabled
 
-  - name: redis
-    alias: redisapp
-    version: 19.1.2
-    repository: oci://registry-1.docker.io/bitnamicharts
-    condition: redisapp.enabled
+- name: redis
+  alias: redisapp
+  version: 19.1.2
+  repository: oci://registry-1.docker.io/bitnamicharts
+  condition: redisapp.enabled
 
-  - name: redis
-    alias: redissession
-    version: 19.1.2
-    repository: oci://registry-1.docker.io/bitnamicharts
-    condition: redissession.enabled
+- name: redis
+  alias: redissession
+  version: 19.1.2
+  repository: oci://registry-1.docker.io/bitnamicharts
+  condition: redissession.enabled
 
-  - name: redis
-    alias: redisworker
-    version: 19.1.2
-    repository: oci://registry-1.docker.io/bitnamicharts
-    condition: redisworker.enabled
+- name: redis
+  alias: redisworker
+  version: 19.1.2
+  repository: oci://registry-1.docker.io/bitnamicharts
+  condition: redisworker.enabled
 
-  - name: grafana
-    alias: grafana
-    version: 8.5.0
-    repository: https://grafana.github.io/helm-charts
-    condition: grafana.enabled
+- name: grafana
+  alias: grafana
+  version: 8.5.0
+  repository: https://grafana.github.io/helm-charts
+  condition: grafana.enabled
 
-  - name: prometheus
-    alias: prometheus
-    version: 25.24.1
-    repository: https://prometheus-community.github.io/helm-charts
-    condition: prometheus.enabled
+- name: prometheus
+  alias: prometheus
+  version: 25.24.1
+  repository: https://prometheus-community.github.io/helm-charts
+  condition: prometheus.enabled
 
-  - name: opentelemetry-collector
-    alias: otel-collector
-    version: 0.108.0
-    repository: https://open-telemetry.github.io/opentelemetry-helm-charts
-    condition: otel-collector.enabled
+- name: opentelemetry-collector
+  alias: otel-collector
+  version: 0.108.0
+  repository: https://open-telemetry.github.io/opentelemetry-helm-charts
+  condition: otel-collector.enabled
